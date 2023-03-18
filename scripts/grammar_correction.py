@@ -1,6 +1,6 @@
 import openai
 
-openai.api_key = "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"
+openai.api_key = ""
 
 def grammar_correction(text):
     """

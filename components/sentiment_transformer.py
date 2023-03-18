@@ -11,4 +11,4 @@ def sentiment_transformer__UI():
     """
     The main UI function to display the Landing page UI
     """
-    pass    
+    st.write("Hello from Sentiment Transformer")

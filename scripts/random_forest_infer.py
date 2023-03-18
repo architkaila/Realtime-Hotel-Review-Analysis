@@ -57,6 +57,7 @@ def get_explanabiltiy(clf, X_test_df, X_test_vec, y_test, predictions, pred_prob
     ## Top adjective giving the max shap value
     candidates = list(vec.get_feature_names_out())
     top_keywords = [candidates[index] for index in shap_values[pred_class].argsort()[0][-4:]]
+    top_keywords.reverse()
     top_adjective = candidates[index]
     print("[INFO] Top Keywords: ", top_keywords)
     print("[INFO] Most Important Adjective: ", top_adjective)
@@ -77,7 +78,7 @@ def get_explanabiltiy(clf, X_test_df, X_test_vec, y_test, predictions, pred_prob
     for adj, noun in remaining_adjectives:
         print(f"{adj} -> {noun}")
     
-    return force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives
+    return force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class
 
 
 def run_pipiline(instance=0):
@@ -110,12 +111,12 @@ def run_pipiline(instance=0):
     pred_prob = loaded_model.predict_proba(X_test_vec)
 
     ## Get the explanation for a instance
-    force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives = get_explanabiltiy(loaded_model, X_test_df, X_test_vec, y_test, predictions, pred_prob, vec, instance=instance)
+    force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class = get_explanabiltiy(loaded_model, X_test_df, X_test_vec, y_test, predictions, pred_prob, vec, instance=instance)
     
-    return force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives
+    return force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class
 
 if __name__ == "__main__":
     print("[INFO] Running the inference pipeline...")
     
     ## Run the pipeline
-    force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives = run_pipiline(instance=0)
+    force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class = run_pipiline(instance=0)
