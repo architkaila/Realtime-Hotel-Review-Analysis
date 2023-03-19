@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from torchtext.data.functional import to_map_style_dataset
 from tqdm import tqdm
+from torch.utils.data.dataset import random_split
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sentiment_dict = {1: "Negative",
                 2: "Neutral",
@@ -43,21 +44,30 @@ def collate_batch(batch,tokenizer,vocab):
 
 def file_processing():
     batch_size = 32
-    file = pd.read_csv(r'../data/tripadvisor_hotel_reviews.csv')
+    file = pd.read_csv(r'./tripadvisor_hotel_reviews.csv')
     file['Sentiment'] = file['Rating'].apply(rating_to_sentiment)
-    train_iter = [(label,text)for label,text in zip(file['Sentiment'].to_list(),file['Review'].to_list())]
+    
+    data = [(label,text)for label,text in zip(file['Sentiment'].to_list(),file['Review'].to_list())]
+    train_iter,test_iter = train_test_split(data,test_size=0.1)
+
     train_dataset = to_map_style_dataset(train_iter)
+    test_dataset = to_map_style_dataset(test_iter)
+
     num_train = int(len(train_dataset) * 0.95)
-    split_train_dataset, split_test_dataset = random_split(train_dataset, [num_train, len(train_dataset) - num_train])
+    split_train_dataset, split_val_dataset = random_split(train_dataset, [num_train, len(train_dataset) - num_train])
+
     tokenizer = get_tokenizer('basic_english')
-    vocab = build_vocab_from_iterator(yield_tokens(train_iter,tokenizer), specials=["<unk>"])
+    vocab = build_vocab_from_iterator(yield_tokens(data,tokenizer), specials=["<unk>"])
     vocab.set_default_index(vocab["<unk>"])
     # Create training, validation and test set DataLoaders using custom collate_batch function
     train_dataloader = DataLoader(split_train_dataset, batch_size=batch_size,
                                 shuffle=True, collate_fn = lambda x: collate_batch(x,tokenizer,vocab))
-    test_dataloader = DataLoader(split_test_dataset, batch_size=batch_size,
+    val_dataloader = DataLoader(split_val_dataset, batch_size=batch_size,
                                 shuffle=True, collate_fn = lambda x: collate_batch(x,tokenizer,vocab))
-    return train_dataloader,test_dataloader,vocab
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size,
+                                shuffle=True, collate_fn = lambda x: collate_batch(x,tokenizer,vocab))
+    print(len(split_train_dataset),len(split_val_dataset))
+    return train_dataloader,val_dataloader,test_dataloader,vocab
 
 # Define the LSTM model
 class LSTMModel(nn.Module):
@@ -81,7 +91,7 @@ class LSTMModel(nn.Module):
     
 def train_model():
     # Model parameters
-    train_dataloader,test_dataloader,vocab = file_processing()
+    train_dataloader,val_dataloader,test_dataloader,vocab= file_processing()
     vocab_size = len(vocab)
     embedding_dim = 128
     hidden_dim = 64
@@ -94,6 +104,7 @@ def train_model():
     num_epochs = 100
 
     for epoch in range(num_epochs):
+        # Training loop
         train_loss = 0.0
         train_acc = 0.0
         model.train()
@@ -115,9 +126,31 @@ def train_model():
             
 
         train_loss /= len(train_dataloader)
-        train_acc /= len(train_dataset)
+        train_acc /= len(train_dataloader.dataset)
         print(f'Epoch {epoch+1}/{num_epochs}, train_loss: {train_loss:.4f}, train_acc: {train_acc:.4f}')
-    return model 
+
+        # Validation loop
+        val_loss = 0.0
+        val_acc = 0.0
+        model.eval()
+        
+        with torch.no_grad():
+            for (labels, text, offsets) in val_dataloader:
+                text = text.to(device)
+                labels = labels.to(device)
+                offsets = offsets.to(device)
+                outputs = model(text, offsets)
+                
+                loss = criterion(outputs, labels)
+                val_loss += loss.item()
+                val_acc += (outputs.argmax(1) == labels).sum().item()
+                
+        val_loss /= len(val_dataloader)
+        val_acc /= len(val_dataloader.dataset)
+        print(f'Epoch {epoch+1}/{num_epochs}, val_loss: {val_loss:.4f}, val_acc: {val_acc:.4f}')
+
+    return model
+
 def save_model(model):
     save_model_path = os.path.join('../models','model_LSTM.pth')
     torch.save(model.state_dict(), save_model_path)
@@ -149,4 +182,3 @@ if __name__ == "__main__":
     save_model=save_model(trainmodel)
     loaamodel = load_model()
     print(evaluate(train_dataloader,loaamodel))
-    
