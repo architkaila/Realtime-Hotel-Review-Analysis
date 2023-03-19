@@ -19,11 +19,11 @@ def about_us_UI():
     ## Displays the team members
     row_1_col1, row_1_col2, row_1_col3 = st.columns(3)
     with row_1_col1:
-        image = Image.open('data/images/test.png')
+        image = Image.open('data/images/archit.jpeg')
         st.image(image, caption="Archit")
     with row_1_col2:
-        image = Image.open('data/images/test.png')
+        image = Image.open('data/images/female.png')
         st.image(image, caption="Neha")
     with row_1_col3:
-        image = Image.open('data/images/test.png')
+        image = Image.open('data/images/male.jpg')
         st.image(image, caption="Zenan")

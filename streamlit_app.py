@@ -5,7 +5,6 @@ import streamlit as st
 from streamlit import runtime
 
 ## Local imports
-#from components import animal_classification_live
 from components import reviews_eda
 from components import sentiment_transformer
 from components import sentiment_classic_explain
@@ -75,7 +74,7 @@ def run_UI():
             
             The goal of this project is to perform sentiment analysis on the reviews of Hotels in the US. There are many existing approaches to this. Our novel way brings in explananbility layer over the sentiment classification. We use the SHAP library to explain the model.
         """)
-        sentiment_transformer.sentiment_transformer__UI()
+        sentiment_transformer.sentiment_transformer_UI(unseen_df)
 
     else:
         st.sidebar.write("""
