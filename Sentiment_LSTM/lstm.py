@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from torchtext.data.functional import to_map_style_dataset
 from tqdm import tqdm
+from sklearn.metrics import classification_report
 from torch.utils.data.dataset import random_split
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sentiment_dict = {1: "Negative",
