@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
 import spacy
 import stanza
 import pickle
@@ -133,6 +134,7 @@ def run_pipiline(data, n_gram_range=(1,1)):
     predictions = clf.predict(X_test_vec)
     pred_prob = clf.predict_proba(X_test_vec)
     print("[INFO] Accuracy: ", accuracy_score(y_test, predictions))
+    print(classification_report(y_test, predictions))
 
     ## save the model to disk
     pickle.dump(clf, open('./models/final_rf_model.sav', 'wb'))
