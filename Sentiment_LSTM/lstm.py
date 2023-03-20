@@ -12,7 +12,7 @@ from tqdm import tqdm
 from torch.utils.data.dataset import random_split
 from sklearn.metrics import classification_report
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sentiment_dict = {1: "Negative",2: "Positive"}
+sentiment_dict = {0: "Negative",1: "Positive"}
 def rating_to_sentiment(rating):
     if rating>4 :
         return 1
@@ -55,10 +55,10 @@ def train_data_processing():
     test_dataset = to_map_style_dataset(test_iter)
 
     num_train = int(len(train_dataset) * 0.95)
-    split_train_dataset, split_val_dataset = random_split(train_dataset, [num_train, len(train_dataset) - num_train])
+    split_train_dataset, split_val_dataset = random_split( train_dataset, [num_train, len(train_dataset) - num_train])
 
     tokenizer = get_tokenizer('basic_english')
-    vocab = build_vocab_from_iterator(yield_tokens(data,tokenizer), specials=["<unk>"])
+    vocab = build_vocab_from_iterator(yield_tokens(train_iter,tokenizer), specials=["<unk>"])
     vocab.set_default_index(vocab["<unk>"])
     # Create training, validation and test set DataLoaders using custom collate_batch function
     train_dataloader = DataLoader(split_train_dataset, batch_size=batch_size,
@@ -74,7 +74,7 @@ def train_data_processing():
 class LSTMModel(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, num_classes):
         super(LSTMModel, self).__init__()
-        self.embedding = nn.EmbeddingBag(vocab_size, embedding_dim,padding_idx=0, sparse=True)
+        self.embedding = nn.EmbeddingBag(vocab_size, embedding_dim,mode = 'mean', sparse=True)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim,num_layers=1, batch_first=True)
         self.fc = nn.Linear(hidden_dim, num_classes)
         self.init_weights()
@@ -102,7 +102,7 @@ def train_model():
     model = LSTMModel(vocab_size, embedding_dim, hidden_dim, num_classes)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1)
-    num_epochs = 50
+    num_epochs = 10
 
     for epoch in range(num_epochs):
         # Training loop
@@ -171,13 +171,15 @@ def evaluate(dataloader, model):
     report = classification_report(all_labels, all_predictions)
     return report
 
-def load_model(vocab):
+def load_model():
     model = torch.jit.load('./models/model_LSTM.pt')
     return model
 
 
 if __name__ == "__main__":
 
-    train_dataloader,val_dataloader,test_dataloader,vocab = train_data_processing()  
-    model = load_model(vocab)
-    print(evaluate(test_dataloader,model))
+    train_dataloader,val_dataloader,test_dataloader,voc= train_data_processing()  
+    model=train_model()
+    save_model(model)
+    lod_model = load_model()
+    print(evaluate(test_dataloader,lod_model))
