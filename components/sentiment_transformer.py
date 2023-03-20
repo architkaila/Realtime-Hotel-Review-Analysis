@@ -19,16 +19,19 @@ def sentiment_transformer_UI(unseen_df):
         ### Sentiment Analysis using BERT Transformer      
         ''')
     
+    hotel_list = [f"Hotel {i}" for i in unseen_df.index]
+    
     with st.container():
-        selected_hotel_review = st.selectbox("Select a Review", unseen_df.index)
+        selected_hotel_review = st.selectbox("Select a Review", hotel_list)
+        selected_hotel_review_index = int(selected_hotel_review.split(" ")[1])
     
     st.write("Original REVIEW")
-    st.write(unseen_df.loc[selected_hotel_review, 'Review'])
+    st.write(unseen_df.loc[selected_hotel_review_index, 'Review'])
     
     if st.button('Analyse Review'):
 
         # Fetch the prediction
-        pred_class = run_inference(instance=int(selected_hotel_review))
+        pred_class = run_inference(instance=selected_hotel_review_index)
         
         ## Display the sentiment
         st.write("Predicted Sentiment")

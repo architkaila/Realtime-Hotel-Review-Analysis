@@ -60,7 +60,7 @@ def run_UI():
         st.title("About Us")
         about_us.about_us_UI()
 
-    elif page == 'Reviews EDA':
+    elif page == 'EDA & Topic Modeling':
         st.sidebar.write("""
             ## About
             
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         if 'loaded' not in st.session_state:
             if len(url_params.keys()) == 0:
                 ## Set the default page as "Animal Classifier"
-                st.experimental_set_query_params(page='Reviews EDA')
+                st.experimental_set_query_params(page='EDA & Topic Modeling')
                 url_params = st.experimental_get_query_params()
                 
             ## Set the page index

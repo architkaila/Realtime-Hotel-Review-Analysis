@@ -12,14 +12,17 @@ def sentiment_classic_explain_UI(unseen_df):
         ### Sentiment Analysis using TF-IDF and Random Forest with Explainability      
         ''')
     
+    hotel_list = [f"Hotel {i}" for i in unseen_df.index]
+    
     with st.container():
-        selected_hotel_review = st.selectbox("Select a Review", unseen_df.index)
+        selected_hotel_review = st.selectbox("Select a Review", hotel_list)
+        selected_hotel_review_index = int(selected_hotel_review.split(" ")[1])
     
     st.write("Original REVIEW")
-    st.write(unseen_df.loc[selected_hotel_review, 'Review'])
+    st.write(unseen_df.loc[selected_hotel_review_index, 'Review'])
     
     if st.button('Analyse Review'):
-        force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class = run_pipiline(instance=int(selected_hotel_review))
+        force_plot, shap_values, top_keywords, top_adjective, review_corrected_text, top_adjective_shap, remaining_adjectives, pred_class = run_pipiline(instance=int(selected_hotel_review_index))
         
         ## Display the grammar corrected review
         st.write("Grammar Corrected REVIEW")

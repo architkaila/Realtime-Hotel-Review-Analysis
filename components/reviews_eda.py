@@ -201,4 +201,44 @@ def reviews_UI(df):
         plt.gca().imshow(w_cloud_4)
         plt.gca().axis('off')
         st.pyplot(fig)
+
+    ## Display the topic modelling results from candidate noun ropics
+    st.markdown("""---""")
+    st.subheader("Topic Modelling with Transformers using Noun Topics")
     
+    ## Show the sample review
+    st.write("Sample Review")
+    st.write("unique great stay wonderful time hotel monaco location excellent short stroll main downtown shopping area pet friendly room show sign animal hair smell monaco suite sleep area big striped curtain pull closed nice touch feel cosy goldfish name brandi enjoyed n partake free wine coffee tea service lobby think great feature great staff friendly free wireless internet hotel work suite laptop decor lovely eclectic mix patten color palatte animal print bathrobe feel like rock star nice n look like sterile chain hotel hotel personality excellent stay")
+    
+    ## Show the identified topics
+    st.write("Identified Noun Topics:")
+    row_5_col1, row_5_col2, row_5_col3 =  st.columns(3)
+    
+    with row_5_col1, _lock:
+        st.info("luxurious")
+    with row_5_col2, _lock:
+        st.info("hotels")
+    with row_5_col3, _lock:
+        st.info("villas")
+
+    ## Display the topic modelling results from predefined candidate topics
+    st.markdown("""---""")
+    st.subheader("Topic Modelling with Transformers using Predefined Candidate Topics")
+    
+    ## Show the predefined candidate topics
+    st.write ("Predefined Candidate Topics: Location, Cleanliness, Service, Food, Value, Restaurant, Room, Friendly staff, Room service, Walking distance")
+
+    ## Show the sample review
+    st.write("Sample Review")
+    st.write("unique great stay wonderful time hotel monaco location excellent short stroll main downtown shopping area pet friendly room show sign animal hair smell monaco suite sleep area big striped curtain pull closed nice touch feel cosy goldfish name brandi enjoyed n partake free wine coffee tea service lobby think great feature great staff friendly free wireless internet hotel work suite laptop decor lovely eclectic mix patten color palatte animal print bathrobe feel like rock star nice n look like sterile chain hotel hotel personality excellent stay")
+    
+    ## Show the identified topics
+    st.write("Identified Topics:")
+    row_6_col1, row_6_col2, row_6_col3 =  st.columns(3)
+    
+    with row_6_col1, _lock:
+        st.warning("Room")
+    with row_6_col2, _lock:
+        st.warning("Restaurant")
+    with row_6_col3, _lock:
+        st.warning("Room service")

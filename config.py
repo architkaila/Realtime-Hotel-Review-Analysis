@@ -1,6 +1,6 @@
 ## Page names for streamlit sidebar
 PAGES = [
-    'Reviews EDA',
+    'EDA & Topic Modeling',
     'Transformer Sentiment Analysis',
     'Classic Sentiment Analysis & Explanability',
     'About Us'
