@@ -42,9 +42,9 @@ def collate_batch(batch,tokenizer,vocab):
     return label_list.to(device), text_list.to(device), offsets.to(device) 
 
 
-def file_processing():
+def train_data_processing():
     batch_size = 32
-    file = pd.read_csv(r'./tripadvisor_hotel_reviews.csv')
+    file = pd.read_csv('./data/tripadvisor_hotel_reviews.csv')
     file['Sentiment'] = file['Rating'].apply(rating_to_sentiment)
     d_file = file.dropna()
     
@@ -92,7 +92,7 @@ class LSTMModel(nn.Module):
     
 def train_model():
     # Model parameters
-    train_dataloader,val_dataloader,test_dataloader,vocab= file_processing()
+    train_dataloader,val_dataloader,test_dataloader,vocab= train_data_processing()
     vocab_size = len(vocab)
     embedding_dim = 128
     hidden_dim = 64
@@ -153,14 +153,14 @@ def train_model():
     return model
 
 def save_model(model):
-    save_model_path = os.path.join('../models','model_LSTM.pth')
-    torch.save(model.state_dict(), save_model_path)
+    model_path ='./models/model_LSTM.pt'
+    model_scripted = torch.jit.script(model) # Export to TorchScript
+    model_scripted.save(model_path)
+    
     
 def evaluate(dataloader, model):
     model.eval()
     all_labels, all_predictions = [], []
-
-
     with torch.no_grad():
         for idx, (label, text, offset) in enumerate(dataloader):
             predict = model(text, offset)
@@ -171,16 +171,13 @@ def evaluate(dataloader, model):
     report = classification_report(all_labels, all_predictions)
     return report
 
-def load_model():
+def load_model(vocab):
+    model = torch.jit.load('./models/model_LSTM.pt')
+    return model
 
-    save_model_path = os.path.join('../models','model_LSTM.pth')
-    loaded_model = LSTMModel(vocab_size, embedding_dim, hidden_dim, num_classes)
-    loaded_model.load_state_dict(torch.load(save_model_path))
-    return loaded_model
+
 if __name__ == "__main__":
 
-    train_dataloader,test_dataloader,vocab = file_processing()
-    trainmodel=train_model()
-    save_model=save_model(trainmodel)
-    loaamodel = load_model()
-    print(evaluate(train_dataloader,loaamodel))
+    train_dataloader,val_dataloader,test_dataloader,vocab = train_data_processing()  
+    model = load_model(vocab)
+    print(evaluate(test_dataloader,model))
