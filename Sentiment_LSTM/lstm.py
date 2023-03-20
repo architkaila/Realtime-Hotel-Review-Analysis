@@ -9,8 +9,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from torchtext.data.functional import to_map_style_dataset
 from tqdm import tqdm
-from sklearn.metrics import classification_report
 from torch.utils.data.dataset import random_split
+from sklearn.metrics import classification_report
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 sentiment_dict = {1: "Negative",2: "Positive"}
 def rating_to_sentiment(rating):
@@ -18,6 +18,7 @@ def rating_to_sentiment(rating):
         return 1
     elif rating < 3:
         return 0
+
 def yield_tokens(data_iter,tokenizer):
     for _, text in data_iter:
         yield tokenizer(text)
@@ -25,7 +26,9 @@ def yield_tokens(data_iter,tokenizer):
 def collate_batch(batch,tokenizer,vocab):
     # Pipelines for processing text and labels
     text_pipeline = lambda x: vocab(tokenizer(x))
+
     label_pipeline = lambda x: int(x)
+
     label_list, text_list, offsets = [], [], [0]
     # Iterate through batch, processing text and adding text, labels and offsets to lists
     for (label, text) in batch:
@@ -43,8 +46,9 @@ def file_processing():
     batch_size = 32
     file = pd.read_csv(r'./tripadvisor_hotel_reviews.csv')
     file['Sentiment'] = file['Rating'].apply(rating_to_sentiment)
+    d_file = file.dropna()
     
-    data = [(label,text)for label,text in zip(file['Sentiment'].to_list(),file['Review'].to_list())]
+    data = [(label,text)for label,text in zip(d_file['Sentiment'].to_list(),d_file['Review'].to_list())]
     train_iter,test_iter = train_test_split(data,test_size=0.1)
 
     train_dataset = to_map_style_dataset(train_iter)
