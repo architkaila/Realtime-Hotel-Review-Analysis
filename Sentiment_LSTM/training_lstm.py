@@ -165,6 +165,7 @@ def train_model(train_dataloader, val_dataloader, vocab, embedding_dim, hidden_d
 
     # Create the LSTM model, loss function, and optimizer
     model = LSTMModel(vocab_size, embedding_dim, hidden_dim, num_classes)
+    model = model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1)
     

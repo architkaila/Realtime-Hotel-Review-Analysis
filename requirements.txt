@@ -12,6 +12,7 @@ spacy==2.3.9
 stanza==1.4.2
 texthero==1.1.0
 torch==1.13.1
+torchtext==0.15.1
 tqdm==4.65.0
 transformers==4.26.1
 wordcloud==1.8.2.2
