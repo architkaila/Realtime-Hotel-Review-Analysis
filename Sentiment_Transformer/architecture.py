@@ -1,46 +1,41 @@
 import torch.nn as nn
 
-
 class BERT_Arch(nn.Module):
+    """
+    BERT Model for Sentiment Analysis
+    """
 
     def __init__(self, bert):
-      
         super(BERT_Arch, self).__init__()
-
         self.bert = bert 
-      
-      # dropout layer
+        
+        # dropout layer
         self.dropout = nn.Dropout(0.1)
       
-      # relu activation function
+        # relu activation function
         self.relu =  nn.ReLU()
 
-      # dense layer 1
+        # dense layer 1
         self.fc1 = nn.Linear(768,512)
       
-      # dense layer 2 (Output layer)
+        # dense layer 2 (Output layer)
         self.fc2 = nn.Linear(512,2)
 
-      #softmax activation function
+        # softmax activation function
         self.softmax = nn.LogSoftmax(dim=1)
 
-    #define the forward pass
+    # define the forward pass
     def forward(self, sent_id, mask):
-        #sent_id = torch.tensor(sent_id)
-        #mask = torch.tensor(mask)
-      #pass the inputs to the model  
-        _, cls_hs = self.bert(sent_id, attention_mask=mask,return_dict=False)
-        #print ("cls_hs")
+        # pass the inputs to the model  
+        _, cls_hs = self.bert(sent_id, attention_mask=mask, return_dict=False)
         x = self.fc1(cls_hs)
-
         x = self.relu(x)
-
         x = self.dropout(x)
 
-      # output layer
+        # output layer
         x = self.fc2(x)
       
-      # apply softmax activation
+        # apply softmax activation
         x = self.softmax(x)
 
         return x
