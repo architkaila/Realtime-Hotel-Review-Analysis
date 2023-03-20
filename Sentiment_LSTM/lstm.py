@@ -126,7 +126,7 @@ def train_model():
             train_acc += (outputs.argmax(1) == labels).sum().item()
             
 
-        train_loss /= len(train_dataloader)
+        train_loss /= len(train_dataloader.dataset)
         train_acc /= len(train_dataloader.dataset)
         print(f'Epoch {epoch+1}/{num_epochs}, train_loss: {train_loss:.4f}, train_acc: {train_acc:.4f}')
 
@@ -146,7 +146,7 @@ def train_model():
                 val_loss += loss.item()
                 val_acc += (outputs.argmax(1) == labels).sum().item()
                 
-        val_loss /= len(val_dataloader)
+        val_loss /= len(val_dataloader.dataset)
         val_acc /= len(val_dataloader.dataset)
         print(f'Epoch {epoch+1}/{num_epochs}, val_loss: {val_loss:.4f}, val_acc: {val_acc:.4f}')
 
