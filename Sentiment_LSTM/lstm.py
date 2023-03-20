@@ -12,16 +12,12 @@ from tqdm import tqdm
 from sklearn.metrics import classification_report
 from torch.utils.data.dataset import random_split
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sentiment_dict = {1: "Negative",
-                2: "Neutral",
-                3: "Positive"}
+sentiment_dict = {1: "Negative",2: "Positive"}
 def rating_to_sentiment(rating):
-    if rating>3 and rating<=5:
-        return 3
-    elif rating == 3:
-        return 2
-    else:
+    if rating>4 :
         return 1
+    elif rating < 3:
+        return 0
 def yield_tokens(data_iter,tokenizer):
     for _, text in data_iter:
         yield tokenizer(text)
@@ -29,7 +25,7 @@ def yield_tokens(data_iter,tokenizer):
 def collate_batch(batch,tokenizer,vocab):
     # Pipelines for processing text and labels
     text_pipeline = lambda x: vocab(tokenizer(x))
-    label_pipeline = lambda x: int(x) - 1
+    label_pipeline = lambda x: int(x)
     label_list, text_list, offsets = [], [], [0]
     # Iterate through batch, processing text and adding text, labels and offsets to lists
     for (label, text) in batch:
@@ -96,13 +92,13 @@ def train_model():
     vocab_size = len(vocab)
     embedding_dim = 128
     hidden_dim = 64
-    num_classes = 3
+    num_classes = 2
 
     # Create the LSTM model, loss function, and optimizer
     model = LSTMModel(vocab_size, embedding_dim, hidden_dim, num_classes)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1)
-    num_epochs = 100
+    num_epochs = 50
 
     for epoch in range(num_epochs):
         # Training loop
