@@ -160,6 +160,7 @@ def evaluate(dataloader, model):
     model.eval()
     all_labels, all_predictions = [], []
 
+
     with torch.no_grad():
         for idx, (label, text, offset) in enumerate(dataloader):
             predict = model(text, offset)
