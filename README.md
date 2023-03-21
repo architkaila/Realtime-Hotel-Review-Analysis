@@ -67,7 +67,7 @@ streamlit run streamlit_app.py
 * You can find the code for streamlit application on the [`streamlit-demo`](https://github.com/architkaila/Realtime-Hotel-Review-Analysis/tree/streamlit_demo) branch
 * [Click Here](https://github.com/architkaila/Realtime-Hotel-Review-Analysis/blob/streamlit_demo/README.md) for the streamlit documentation 
 * Here you can play around with the streamlit demo 
->![img.png](data/images/dashboard.png)
+
 
 
 &nbsp;
