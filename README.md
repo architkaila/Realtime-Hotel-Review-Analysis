@@ -68,13 +68,18 @@ streamlit run streamlit_app.py
 * [Click Here](https://github.com/architkaila/Realtime-Hotel-Review-Analysis/blob/streamlit_demo/README.md) for the streamlit documentation 
 * Here you can play around with the streamlit demo 
 
+&nbsp;
+# Future Enhancements:
 
+1. To make results more robust, we would have to collect more data for the negative class.
+2. The inference scripts( including the SHAP analysis and dependency parsing functionality) and the saved model can be pushed to a serverless cloud component like Azure functions or AWS lambda and an api can be called for faster inference time. With serverless deployment, we would make sure that the resources are being used efficiently.
+3. We plan to integrate the model with the google review api, so that we can have user feed the hotel name in real time. Then we can use a weighted metric (like number of likes or upvotes on a review) to extract the top "n" review and run the above model on those "n" reviews to find the general sentiment and highest rated attributes for the given hotel.
 
 &nbsp;
 # References
 
-1."Comparing Transformers and Recurrent Neural Networks on Sequences" by Ivana Balažević et al. (2021) compares BERT, RoBERTa, and XLNet to LSTM and GRU on sequence modeling tasks. Used to select the models we would want to fine tune and compare for this project.
+1. "Comparing Transformers and Recurrent Neural Networks on Sequences" by Ivana Balažević et al. (2021) : compares BERT, RoBERTa, and XLNet to LSTM and GRU on sequence modeling tasks. Used to select the models we would want to fine tune and compare for this project.
 
-2."How to Fine-Tune BERT for Text Classification?" by Chi Sun et al. (2019) used as a guideline for fine-tuning a pre-trained BERT model. Also used this paper to determine the value in trying to fine-tune ROBERTA and XLNET as compared to BERT.
+2. "How to Fine-Tune BERT for Text Classification?" by Chi Sun et al. (2019) : used as a guideline for fine-tuning a pre-trained BERT model. Also used this paper to determine the value in trying to fine-tune ROBERTA and XLNET as compared to BERT.
 
 
