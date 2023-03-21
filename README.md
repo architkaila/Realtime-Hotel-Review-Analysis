@@ -73,6 +73,8 @@ streamlit run streamlit_app.py
 &nbsp;
 # References
 
+1."Comparing Transformers and Recurrent Neural Networks on Sequences" by Ivana Balažević et al. (2021) compares BERT, RoBERTa, and XLNet to LSTM and GRU on sequence modeling tasks. Used to select the models we would want to fine tune and compare for this project.
 
+2."How to Fine-Tune BERT for Text Classification?" by Chi Sun et al. (2019) used as a guideline for fine-tuning a pre-trained BERT model. Also used this paper to determine the value in trying to fine-tune ROBERTA and XLNET as compared to BERT.
 
 
