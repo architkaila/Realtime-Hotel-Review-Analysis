@@ -1,3 +1,7 @@
+'''
+Reference: https://www.analyticsvidhya.com/blog/2020/07/transfer-learning-for-nlp-fine-tuning-bert-for-text-classification/
+Author: Prateek Joshi 
+'''
 import numpy as np
 import pandas as pd
 import torch
