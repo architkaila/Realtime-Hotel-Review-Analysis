@@ -1,3 +1,7 @@
+'''
+Reference: https://pytorch.org/text/stable/
+https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html?highlight=lstm#torch.nn.LSTM
+'''
 ## Library Imports
 import os 
 import torch
